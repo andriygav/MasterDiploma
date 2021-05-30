@@ -90,8 +90,8 @@ $$\textbf{A}_\text{ps} = \textbf{U}{\bf\Lambda}\textbf{V}^\mathsf{T}. \eqno(4.1)
 $$\xi = \argmax_{j\in \mathcal{A}}{\eta_j}. \eqno(4.2)$$
 
 \begin{figure}[h!t]\center
-\subfloat[Матрица ковариации]{\includegraphics[width=0.5\textwidth]{results/Cov.pdf}}
-\subfloat[Дисперсионные доли]{\includegraphics[width=0.5\textwidth]{results/BelslyImage.pdf}}
+\subfloat[Матрица ковариации]{\includegraphics[width=0.5\textwidth]{results/relevant/Cov.pdf}}
+\subfloat[Дисперсионные доли]{\includegraphics[width=0.5\textwidth]{results/relevant/BelslyImage.pdf}}
 \caption{Илюстрация метода Белсли}
 \label{CovBel}
 \end{figure}
@@ -143,3 +143,132 @@ x
 
 
 В табл.~\ref{CovBelTable} приведены индексы обусловленности и соответствующие им дисперсионные доли, которые также изображены на рис.~\ref{CovBel}.b. Согласно этим данным, максимальный индекс обусловленности $\eta_6 = 1.2\cdot 10^{16}$. Ему соответствуют максимальные дисперсионные доли признаков с индексами 1 и 4, которые, как видно из построения выборки, являются линейно зависимые.
+
+\subsection{Вычислительный эксперимент}
+Для анализа свойств предложенного алгоритма и сравнения его с существующими был проведен вычислительный эксперимент в котором параметры нейросети удалялись методами,  которые были описаны в разделах 3.1---3.3 и методом Белсли.
+
+В качестве данных использовались три выборки. Выборки Wine~\cite{Wine} и Boston~Housing~\cite{Boston}  --- это реальные данные. Синтетические данные сгенерированы таким образом чтобы параметры сети были мультиколинеарными. Генерация данных состояла из двух этапов. 
+На первом этапе генерировался вектор параметров $\mathbf{w}_{\text{synthetic}}$:
+$$\mathbf{w}_{\text{synthetic}}  \sim \mathcal{N}(\textbf{m}_{\text{synthetic}}, \textbf{A}_{\text{synthetic}}), \eqno(5.1)$$ 
+где 
+$\textbf{m}_{\text{synthetic}} = \begin{bmatrix}
+1.0\\
+0.0025\\
+\cdots\\
+0.0025
+\end{bmatrix}$,
+$\textbf{A}_{\text{synthetic}} = \begin{bmatrix}
+1.0& 10^{-3}& \cdots& 10^{-3}& 10^{-3}\\
+10^{-3}& 1.0& \cdots& 0.95& 0.95\\
+\cdots&\cdots&\cdots&\cdots&\cdots\\
+10^{-3}& 0.95& \cdots& 0.95& 1.0
+\end{bmatrix}$.
+
+На втором этапе генерировалась выборка $\mathfrak{D}_{\text{synthetic}}$:
+$$\mathfrak{D}_{\text{synthetic}} = \{(\textbf{x}_i,y_i)| \textbf{x}_i \sim  \mathcal{N}(\textbf{1}, \textbf{I}), y_i = x_{i0}, i = 1 \cdots 10000\}. \eqno(5.2)$$
+В приведенном выше векторе параметров $\mathbf{w}_{\text{synthetic}}$ для выборки $\mathfrak{D}_{\text{synthetic}}$, наиболее релевантным является первый параметр, а все остальные параметры являются нерелевантными. Матрица ковариации была выбрана таким образом, чтобы все нерелевантные параметры были зависимы и метод Белсли был максимально эффективен.
+
+
+
+\begin{table}[h]
+
+\begin{center}
+\caption{Описание выборок}
+\begin{tabular}{|c|c|c|c|}
+\hline
+	Выборка &Тип задачи& Размер выборки& Число признаков\\
+	\hline
+	
+	\multicolumn{1}{|l|}{Wine}
+	&
+	\multicolumn{1}{|l|}{класификация}
+	 & 178 & 13\\
+	\hline
+	
+	\multicolumn{1}{|l|}{Boston Housing}
+	&
+	\multicolumn{1}{|l|}{регресия}
+	& 506 & 13\\
+	\hline
+	
+	\multicolumn{1}{|l|}{Synthetic data}
+	&
+	\multicolumn{1}{|l|}{регресия}
+	& 10000 & 100\\
+\hline
+
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+Для алгоритмов тренировочная и тестовая выборки составили~$80\%$ и~$20\%$ соответсвенно. Критерием качества прореживания служит процент параметров нейросети, удаление которого не влечет значимой потери качества прогноза. Также критерием качества служит устойчивость нейросети к зашумленности данных. 
+
+Качеством прогноза $R_{\text{cl}}$ модели для задачи классификации является точность прогноза модели:
+$$R_{\text{cl}} = \frac{\sum_{(\textbf{x},y)\in \mathfrak{D}} [f(\textbf{x}, \textbf{w}) = y]}{\left|\mathfrak{D}\right|}, \eqno(5.3)$$
+
+Качеством прогноза $R_{\text{rg}} $ модели для задачи регрессии является среднеквадратическое отклонение результата модели от точного:
+
+$$R_{\text{rg}} = \frac{\sum_{(\textbf{x},y)\in \mathfrak{D}} \left(f(\textbf{x}, \textbf{w}) - y\right)^2}{\left|\mathfrak{D}\right|}, \eqno(5.4)$$
+
+\paragraph{Wine.} Рассмотрим нейроную сеть с 13 нейронами на входе, 13 нейронами в скрытом слое и 3 нейронами на выходе.
+
+\begin{figure}[h!t]\center
+\includegraphics[width=0.8\textwidth]{results/relevant/WIne/All.pdf}\\
+\caption{Качество прогноза при удаление параметров на выборке Wine}
+\label{WineAll}
+\end{figure}
+
+\begin{figure}[h!t]\center
+\subfloat[Произвольное удаление параметров]{\includegraphics[width=0.5\textwidth]{results/relevant/WIne/RandomNoise3D.pdf}}
+\subfloat[Оптимальное прореживание]{\includegraphics[width=0.5\textwidth]{results/relevant/WIne/OBDNoise3D.pdf}}\\
+\subfloat[Вариационный метод]{\includegraphics[width=0.5\textwidth]{results/relevant/WIne/VariationalNoise3D.pdf}}
+\caption{Влияние шума в начальных данных на шум выхода нейросети на выборке Wine}
+\label{WineNoise}
+\end{figure}
+
+На рис.~\ref{WineAll} показано как меняется точность прогноза $R_{\text{cl}}$ при удалении параметров указанными методами. Из графика видно, что метод оптимального прореживания, вариационный метод и метод Белсли позволяют удалить $\approx80\%$ параметров и качество всех этих методов падает при удалении $\approx90\%$ параметров нейросети. 
+
+На рис.~\ref{WineNoise} показаны поверхности изменения уровня шума ответов нейросети при изменении процента удаленных параметров и уровня шума входных данных для разных методов прореживания. На графиках показано, что при удалении параметров нейросети методом Белсли шум меньше, чем при удалении параметров другими методами, на это указывает то что поверхность которая соответствует методу Белсли ниже других поверхностей.
+
+\paragraph{Boston Housing.} Рассмотрим нейроную сеть с 13 нейронами на входе, 39 нейронами в скрытом слое и одним нейроном на выходе.
+
+\begin{figure}[h!t]\center
+\includegraphics[width=0.8\textwidth]{results/relevant/Boston/All.pdf}\\
+\caption{Качество прогноза при удаление параметров на выборке Boston}
+\label{BostonAll}
+\end{figure}
+
+\begin{figure}[h!t]\center
+\subfloat[Произвольное удаление параметров]{\includegraphics[width=0.5\textwidth]{results/relevant/Boston/RandomNoise3D.pdf}}
+\subfloat[Оптимальное прореживание]{\includegraphics[width=0.5\textwidth]{results/relevant/Boston/OBDNoise3D.pdf}}\\
+\subfloat[Вариационный метод]{\includegraphics[width=0.5\textwidth]{results/relevant/Boston/VariationalNoise3D.pdf}}
+\caption{Влияние шума в начальных данных на шум выхода нейросети на выборке Boston}
+\label{BostonNoise}
+\end{figure}
+
+На рис.~\ref{BostonAll} показано как меняется среднеквадратическое отклонение прогноза $\mathsf{R}_{\text{rg}}$ от точного ответа  при удалении параметров указанными методами. График показывает, что метод Белсли является более эффективным, чем другие методы, так-как позволяет удалить больше параметров нейросети без потери качества.
+
+На рис.~\ref{BostonNoise} показаны поверхности изменения уровня шума ответов нейросети при изменении процента удаленных параметров и уровня шума входных данных для разных методов прореживания. График показывает, что уровень шума всех методов одинаковый, так-как поверхности всех методов находятся на одном уровне.
+
+
+\paragraph{Синтетические данные.} Рассмотрим нейроную сеть с 100 нейронами на входе и одним нейроном на выходе.
+
+\begin{figure}[h!t]\center
+\includegraphics[width=0.8\textwidth]{results/relevant/Data1/All.pdf}\\
+\caption{Качество прогноза при удаление параметров на синтетической выборке}
+\label{Data1All}
+\end{figure}
+
+\begin{figure}[h!t]\center
+\subfloat[Произвольное удаление параметров]{\includegraphics[width=0.5\textwidth]{results/relevant/Data1/RandomNoise3D.pdf}}
+\subfloat[Оптимальное прореживание]{\includegraphics[width=0.5\textwidth]{results/relevant/Data1/OBDNoise3D.pdf}}\\
+\subfloat[Вариационный метод]{\includegraphics[width=0.5\textwidth]{results/relevant/Data1/VariationalNoise3D.pdf}}
+\caption{Влияние шума в начальных данных на шум выхода нейросети на синтетической выборке}
+\label{Data1Noise}
+\end{figure}
+
+На рис.~\ref{Data1All} показано как меняется среднеквадратическое отклонение прогноза от $\mathsf{R}_{\text{rg}}$ точного ответа при удалении параметров указанными методами. График показывает, что удаление параметров методом Белсли являеться более эффективным чем другие методы прореживания, так-как качество прогноза нейросети улучшается при удалении шумовых параметров.
+
+На рис.~\ref{Data1Noise} показаны поверхности изменения уровня шума ответов нейросети при изменении процента удаленных параметров и уровня шума входных данных для разных методов прореживания. На графиках показано, что при удалении параметров нейросети методом Белсли шум меньше, чем при удалении параметров другими методами, так-как поверхность которая соответствует методу Белсли ниже других поверхностей.

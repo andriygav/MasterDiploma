@@ -35,10 +35,20 @@
 
 \newcommand*{\No}{No.}
 
+\usepackage{geometry}
+\geometry{left=2.5cm}
+\geometry{right=1.0cm}
+\geometry{top=2.0cm}
+\geometry{bottom=2.0cm}
+
+\def\[#1\]{%
+  {\small \begin{equation*}#1\end{equation*}}%
+}
+
 \begin{document}
 
 % Титульный лист
-\input{./frontpage.tex}
+%\input{./frontpage.tex}
 
 % Нумерация должна начинаться со второй страницы
 \setcounter{page}{2}
@@ -57,10 +67,10 @@
 \input{./priorexpert.tex}
 \input{./privlearn.tex}
 \input{./bayesdistil.tex}
-\input{./priorexpertfig.tex}
 \input{./order.tex}
 \input{./relevant.tex}
 \input{./samplesize.tex}
+\input{./priorexpertfig.tex}
 \input{./series.tex}
 
 % Выводы

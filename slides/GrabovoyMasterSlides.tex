@@ -298,13 +298,13 @@ p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, 
 
 
 %----------------------------------------------------------------------------------------------------------
-\begin{frame}{Байесовкая дистилляция: приведение параметров моделей}
+\begin{frame}{Байесовкая дистилляция: сопоставление параметров моделей}
 \begin{rusdefinition}
 Структура модели~--- множество структурных параметров модели, которые задают вид суперпозиции.
 \end{rusdefinition}
 
 \begin{rusdefinition}
-Приведение параметрических моделей~--- изменение структуры модели (одной или нескольких моделей) в результате которого векторы параметров различных моделей лежат в одном пространстве.
+Сопоставление параметрических моделей~--- изменение структуры модели (одной или нескольких моделей) в результате которого векторы параметров различных моделей лежат в одном пространстве.
 \end{rusdefinition}
 
 
@@ -318,7 +318,7 @@ p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, 
 \textbf{Пространства параметров не совпадают}
 В данном случае дистиляция проходит в два этапа:
 \begin{itemize}
-    \item выполняется приведение модели учителя к ученику;
+    \item выполняется сопоставление моделей учителя и ученика;
     \item апостериорное распределение учителя назначается априорным распределением ученика.
 \end{itemize}
 
@@ -326,63 +326,53 @@ p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, 
 
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Размеры скрытых слоев учителя и ученика отличаются}
-\begin{itemize}
-    \item число слоев совпадает $L=T$;
-    \item размеры соответствующих слоев не совпадают: $n_l \leq n_t,$ где $n_t$ для всех $l \in \{1,\cdots,L\}, t \in \{1,\cdots,T\}$.
-\end{itemize}
+
 Преобразования $t$-го слоя учителя:
 \[
 \begin{aligned}
 \phi\bigr(t, \mathbf{u}\bigr) : \mathbb{R}^{\text{p}_{\text{tr}}} \to \mathbb{R}^{\text{p}_{\text{tr}}-2n_t}
 \end{aligned}
 \]
-описывает удаление одного нейрона из~$t$-го слоя. Новый вектор параметров обозначим~$\mathbf{u}' =  \phi\bigr(t, \mathbf{u}\bigr),$ а выброшенные параметры обозначим~$\mathbf{u}''$
+описывает удаление одного нейрона из~$t$-го слоя. Новый вектор параметров $\bm{\upsilon} =  \phi\bigr(t, \mathbf{u}\bigr),$ а элементы вектора, которые были удалены как $\bar{\bm{\upsilon}}$
 
 \begin{rustheorem}[Грабовой, 2021]
 Пусть выполняются следующие условия:
 \begin{itemize}
-\item $p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, \bm{\Sigma}_0\bigr)$;
-\item число слоев совпадает $L=T$;
-\item для всех $t, l$ таких, что $t=l$ выполняется $n_s \leq n_l,$.
+\itemапостериорное распределение параметров $p\bigr(\mathbf{u}|\mathfrak{D}\bigr) = \mathcal{N}\bigr(\mathbf{m}, \bm{\Sigma}\bigr);$
+\item число слоев модели учителя равняется числу слоев модели ученика $L=T$;
+\item размеры соответствующих слоев не совпадают, другими словами, для всех $t, l$ таких, что $t=l$ выполняется $n_l \leq n_t$.
 \end{itemize}
-Тогда $p\bigr(\mathbf{u}'|\mathbf{X}, \mathbf{y}\bigr)$ является нормальным распределением:
-\[
-\begin{aligned}
-p\bigr(\mathbf{u}'|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_{0}'+\bm{\Sigma}_0^{', ''}{\bm{\Sigma}_0^{''}}^{-1}\left(\mathbf{0} - \mathbf{u}_0^{''}\right), \bm{\Sigma}_0^{'}-\bm{\Sigma}_0^{', ''}{\bm{\Sigma}_0^{''}}^{-1}\bm{\Sigma}_0^{', ''}\bigr).
-\end{aligned}
-\]
+Тогда апостериорное распределения параметров модели учителя $p\bigr(\bm{\upsilon}|\mathfrak{D}\bigr)$ также является нормальным распределением.
 \end{rustheorem}
 
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Число скрытых слоев учителя и ученика отличаются}
-\begin{itemize}
-    \item соответствующие размеры слоев совпадают, $n_t=n_{t-1}$;
-    \item функция активации удовлетворяет свойству $\bm{\sigma} \circ \bm{\sigma} = \bm{\sigma}$.
-\end{itemize}
+
 Преобразования $t$-го слоя учителя:
 \[
 \begin{aligned}
 \psi\bigr(t\bigr) : \mathbb{R}^{\text{p}_{\text{tr}}} \to \mathbb{R}^{\text{p}_{\text{tr}}-n_tn_{t-1}}
 \end{aligned}
 \]
-описывает удаление~$t$-го слоя. Новый вектор параметров обозначим~$\mathbf{u}' =  \phi\bigr(t, \mathbf{u}\bigr),$ а выброшенные параметры обозначим~$\mathbf{u}''$
+описывает удаление~$t$-го слоя. Новый новый вектор параметров $\bm{\upsilon} = \psi\bigr(t, \mathbf{u}\bigr),$ а элементы вектора, которые были удалены как $\bar{\bm{\upsilon}}.$
 
 \begin{rustheorem}[Грабовой, 2021]
 Пусть выполняются следующие условия:
 \begin{itemize}
-\item $p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, \bm{\Sigma}_0\bigr)$;
-\item соответствующие размеры слоев совпадают, $n_t=n_{t-1}$;
-\item функция активации удовлетворяет свойству $\bm{\sigma} \circ \bm{\sigma} = \bm{\sigma}$.
+\item апостериорное распределение параметров $p\bigr(\mathbf{u}|\mathfrak{D}\bigr) = \mathcal{N}\bigr(\mathbf{m}, \bm{\Sigma}\bigr);$
+\item соответствующие размеры слоев совпадают, $n_t=n_{t-1},$ то есть матрица $\mathbf{U}_t$ является квадратной;
+\item функция активации удовлетворяет свойству идемпотентности $\bm{\sigma} \circ \bm{\sigma} = \bm{\sigma}$.
 \end{itemize}
-Тогда $p\bigr(\mathbf{u}'|\mathbf{X}, \mathbf{y}\bigr)$ является нормальным распределением:
+Тогда апостериорное распределения также описывается нормальным распределением со следующей плотностью распределения:
 \[
+\label{eq:ap:5}
 \begin{aligned}
-p\bigr(\mathbf{u}'|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_{0}'+\bm{\Sigma}_0^{', ''}{\bm{\Sigma}_0^{''}}^{-1}\left(\mathbf{i} - \mathbf{u}_0^{''}\right), \bm{\Sigma}_0^{'}-\bm{\Sigma}_0^{', ''}{\bm{\Sigma}_0^{''}}^{-1}\bm{\Sigma}_0^{', ''}\bigr),
+p\bigr(\bm{\upsilon}|\mathfrak{D}\bigr) = \mathcal{N}\bigr(\mathbf{m}_{\bm{\upsilon}}+\bm{\Sigma}_{\bm{\upsilon},\bar{\bm{\upsilon}}} \bm{\Sigma}_{\bar{\bm{\upsilon}},\bar{\bm{\upsilon}}}^{-1} \left(\mathbf{i} - \bar{\bm{\upsilon}}\right), \bm{\Sigma}_{\bm{\upsilon},\bm{\upsilon}} - \bm{\Sigma}_{\bm{\upsilon},\bar{\bm{\upsilon}}}\bm{\Sigma}_{\bar{\bm{\upsilon}},\bar{\bm{\upsilon}}}^{-1}\bm{\Sigma}_{\bm{\upsilon},\bar{\bm{\upsilon}}}\bigr),
 \end{aligned}
 \]
-где~$\mathbf{i} = \mathrm{vec}\bigr(\mathbf{I}\bigr).$
+где~$\mathbf{i}$~ единичная матрица преобразована в вектор.
 \end{rustheorem}
 
 \end{frame}
@@ -553,7 +543,7 @@ g = \bm{\sigma} \circ \mathbf{W}_2 \circ \bm{\sigma} \circ \mathbf{W}_1, \quad \
 \end{center}
 \end{table}
 
-Для численного сравнения качества моделей выбрана разность площадей графика $p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{w}\bigr)$. Чем больше значение тем лучше.
+Для численного сравнения качества моделей выбрана разность площадей графика $\ln p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{w}\bigr)$. Чем больше значение тем лучше.
 
 \end{frame}
 %----------------------------------------------------------------------------------------------------------

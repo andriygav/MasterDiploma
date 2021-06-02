@@ -184,47 +184,6 @@ p\bigr(\mathbf{y}, \mathbf{S}|\mathbf{X}, \mathbf{g}, \mathcal{I}\bigr)=\prod_{i
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
-
-\begin{frame}{Байесовская постановка задачи дистилляции}
-
-Задана модель учителя с фиксированными параметрами в виде суперпозиции отображений:
-\[
-\begin{aligned}
-f = \bm{\sigma} \circ \mathbf{U}_T \circ \bm{\sigma} \circ \mathbf{U}_{T-1} \circ \cdots \circ \bm{\sigma} \circ \mathbf{U}_1,
-\end{aligned}
-\]
-где~$\mathbf{U}$ матрицы линейны отображений,~$\bm{\sigma}$ нелинейность. Вектор параметров модели учителя:
-\[
-\begin{aligned}
-\mathbf{u} = \text{vec}\bigr(\left[\mathbf{U}_T, \mathbf{U}_{T-1}, \cdots \mathbf{U}_1\right]\bigr).
-\end{aligned}
-\]
-
-На основе выборки~$\left\{\mathbf{x}_i, y_i\right\}_{i=1}^{m}$ и учителя~$f$ требуется выбрать модель ученика:
-\[
-\begin{aligned}
-g = \bm{\sigma} \circ \mathbf{W}_L \circ \cdots \circ \bm{\sigma} \circ \mathbf{W}_1, \quad \mathbf{W}_l \in \mathbb{R}^{n_s \times n_{s-1}},
-\end{aligned}
-\]
-где~$\mathbf{W}$,~$\bm{\sigma}$,~$\mathbf{w}$ вводятся аналогично учителю. Выбор модели~$g$ эквивалентный оптимизации вектора параметров~$\mathbf{w}$. Параметры~$\mathbf{w}$ оптимизируются на основе вариационного вывода:
-\[
-\begin{aligned}
-\hat{\mathbf{w}} = \arg \min_{q, \mathbf{w}} \text{D}_{\text{KL}}\bigr(q\bigr(\mathbf{w}\bigr)||p\bigr(\mathbf{w}|\mathbf{A}\bigr)\bigr) - \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{w}\bigr).
-\end{aligned}
-\]
-Априорное распределение~$p\bigr(\mathbf{w}|\mathbf{A}\bigr)$ задается как функция от апостериорного распределения~$p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr)$. Апостериорное распределение параметров модели учителя задается нормальным распределением:
-\[
-\begin{aligned}
-p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, \bm{\Sigma}_0\bigr).
-\end{aligned}
-\]
-
-Проблема: пространства параметров учителя и ученика не совпадает.
-
-\end{frame}
-
-
-%----------------------------------------------------------------------------------------------------------
 \begin{frame}{Задача классификации: вероятностная постановка}
 \justifying
 Заданы:
@@ -296,6 +255,47 @@ y'_i = \begin{cases}
 \]
 \end{rustheorem}
 \end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Байесовская постановка задачи дистилляции}
+
+Задана модель учителя с фиксированными параметрами в виде суперпозиции отображений:
+\[
+\begin{aligned}
+f = \bm{\sigma} \circ \mathbf{U}_T \circ \bm{\sigma} \circ \mathbf{U}_{T-1} \circ \cdots \circ \bm{\sigma} \circ \mathbf{U}_1,
+\end{aligned}
+\]
+где~$\mathbf{U}$ матрицы линейны отображений,~$\bm{\sigma}$ нелинейность. Вектор параметров модели учителя:
+\[
+\begin{aligned}
+\mathbf{u} = \text{vec}\bigr(\left[\mathbf{U}_T, \mathbf{U}_{T-1}, \cdots \mathbf{U}_1\right]\bigr).
+\end{aligned}
+\]
+
+На основе выборки~$\left\{\mathbf{x}_i, y_i\right\}_{i=1}^{m}$ и учителя~$f$ требуется выбрать модель ученика:
+\[
+\begin{aligned}
+g = \bm{\sigma} \circ \mathbf{W}_L \circ \cdots \circ \bm{\sigma} \circ \mathbf{W}_1, \quad \mathbf{W}_l \in \mathbb{R}^{n_s \times n_{s-1}},
+\end{aligned}
+\]
+где~$\mathbf{W}$,~$\bm{\sigma}$,~$\mathbf{w}$ вводятся аналогично учителю. Выбор модели~$g$ эквивалентный оптимизации вектора параметров~$\mathbf{w}$. Параметры~$\mathbf{w}$ оптимизируются на основе вариационного вывода:
+\[
+\begin{aligned}
+\hat{\mathbf{w}} = \arg \min_{q, \mathbf{w}} \text{D}_{\text{KL}}\bigr(q\bigr(\mathbf{w}\bigr)||p\bigr(\mathbf{w}|\mathbf{A}\bigr)\bigr) - \log p\bigr(\mathbf{y}|\mathbf{X}, \mathbf{w}\bigr).
+\end{aligned}
+\]
+Априорное распределение~$p\bigr(\mathbf{w}|\mathbf{A}\bigr)$ задается как функция от апостериорного распределения~$p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr)$. Апостериорное распределение параметров модели учителя задается нормальным распределением:
+\[
+\begin{aligned}
+p\bigr(\mathbf{u}|\mathbf{X}, \mathbf{y}\bigr) = \mathcal{N}\bigr(\mathbf{u}_0, \bm{\Sigma}_0\bigr).
+\end{aligned}
+\]
+
+Проблема: пространства параметров учителя и ученика не совпадает.
+
+\end{frame}
+
 
 %----------------------------------------------------------------------------------------------------------
 \begin{frame}{Байесовкая дистилляция: приведение параметров моделей}

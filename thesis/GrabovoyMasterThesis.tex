@@ -4,18 +4,14 @@
 
 \usepackage{amsthm}
 \usepackage{graphicx}
-\usepackage{caption}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{mathrsfs}
-\usepackage{euscript}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{caption}
 \usepackage{color}
 \usepackage{bm}
 \usepackage{tabularx}
-\usepackage{adjustbox}
 \usepackage{url}
 \usepackage{multirow}
 
@@ -42,7 +38,7 @@
 \geometry{bottom=2.0cm}
 
 \def\[#1\]{%
-  {\small \begin{equation*}#1\end{equation*}}%
+  {\small \begin{equation}#1\end{equation}}%
 }
 
 \begin{document}
@@ -59,6 +55,9 @@
 
 % Обозначения и сокращения
 % \input{./dict.tex}
+
+% Анотация
+\input{./annotation.tex}
 
 % Введение
 \input{./introduction.tex}
